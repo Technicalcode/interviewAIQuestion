@@ -3,13 +3,23 @@ import { Bot, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../utils/firebase'; // Ensure path is correct
+import { ServerUrl } from '../App';
+import axios from 'axios'
 
 function Auth() {
   
   const handleGoogleAuth = async () => {
     try {
-      const result = await signInWithPopup(auth, provider);
-      console.log(result);
+      const response = await signInWithPopup(auth, provider);
+       let User = response.user
+       let name = User.displayName
+       let email = User.email
+       const result = await axios.post(ServerUrl + "/api/auth/google", 
+        {name, email}, {withCredentials:true}
+       )
+       console.log(result.data);
+       
+     
       // Success login ke baad yahan se navigate karein
     } catch (error) {
       console.error("Auth Error:", error.message);

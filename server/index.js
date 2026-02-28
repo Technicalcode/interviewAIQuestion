@@ -1,13 +1,22 @@
 const express = require("express"); // Use require for standard Node apps
 const dotenv = require("dotenv");
 const connectDB = require("./config/connectDB");
-
-// Initialize dotenv to load variables from a .env file
+const cors = require('cors');
+const cookieParser = require("cookie-parser");
+const authRouter = require("./routes/auth.route");
 dotenv.config();
 
 const app = express();
 
-// Fallback to 3000 if PORT isn't defined in your .env
+app.use(cors({
+    origin: "http://localhost:5173", // Removed trailing slash for better compatibility
+    credentials: true
+}));
+
+app.use(express.json())
+app.use(cookieParser())
+
+app.use("/api/auth" , authRouter)
 const PORT = process.env.PORT || 3000; 
 
 
