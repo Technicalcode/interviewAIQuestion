@@ -1,37 +1,42 @@
 import React, { useEffect } from 'react'
- import {Route, Routes} from 'react-router-dom'
- import Home from './pages/Home'
- import Auth from './pages/Auth'
+import { Route, Routes, useNavigate } from 'react-router-dom'
+import Home from './pages/Home'
+import Auth from './pages/Auth'
 
-  import axios from 'axios'
-import { useDispatch } from 'react-redux'
+import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
 import { setUserData } from './Redux/userSlice'
 
 
- export const ServerUrl ="http://localhost:8000"
+export const ServerUrl = "http://localhost:8000"
 
 function App() {
+  const { userData } = useSelector((state) => state.user)
 
   const dispatch = useDispatch()
-  useEffect(() =>{
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (!userData) {
+      navigate('/auth')
+    }
+
     const getUser = async () => {
       try {
-        const result = await axios.get(ServerUrl + "/api/user/current-user", {withCredentials:true})
-       dispatch(setUserData(result.data))
+        const result = await axios.get(ServerUrl + "/api/user/current-user", { withCredentials: true })
+        dispatch(setUserData(result.data))
       } catch (error) {
         console.log(error);
-        
-      dispatch(setUserData(null))
-        
+        dispatch(setUserData(null))
       }
     }
+
     getUser()
-  },[dispatch])
+  }, [dispatch])
   return (
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-         <Route path='/auth' element={<Auth/>}/>
-      </Routes>
+    <Routes>
+      <Route path='/' element={<Home />} />
+      <Route path='/auth' element={<Auth />} />
+    </Routes>
   )
 }
 
