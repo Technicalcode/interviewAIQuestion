@@ -27,7 +27,7 @@ const googleAuth = async (req, res) => { // ✅ export const hata diya
 
 const logout = async (req, res) => { // ✅ export const hata diya
   try {
-   await res.clearCookie("token");
+    await res.clearCookie("token");
     return res.status(200).json({ message: "LogOut Successfully" });
   } catch (error) {
     return res.status(500).json({ message: `Logout error ${error}` });
