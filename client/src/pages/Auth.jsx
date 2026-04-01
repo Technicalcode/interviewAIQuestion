@@ -5,8 +5,12 @@ import { signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../utils/firebase'; // Ensure path is correct
 import { ServerUrl } from '../App';
 import axios from 'axios'
+import { useDispatch } from 'react-redux';
+import { setUserData } from '../Redux/userSlice';
 
 function Auth() {
+
+  const dispatch = useDispatch()
   
   const handleGoogleAuth = async () => {
     try {
@@ -17,12 +21,13 @@ function Auth() {
        const result = await axios.post(ServerUrl + "/api/auth/google", 
         {name, email}, {withCredentials:true}
        )
-       console.log(result.data);
+      dispatch(setUserData(result.data))
        
      
       // Success login ke baad yahan se navigate karein
     } catch (error) {
       console.error("Auth Error:", error.message);
+       dispatch(setUserData(null))
     }
   };
 
